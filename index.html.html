@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>彼があなたを手放せない理由診断</title>
+<style>
+  :root {
+    --pink: #f472b6;
+    --pink-light: #fce7f3;
+    --pink-mid: #fbcfe8;
+    --purple: #a855f7;
+    --purple-light: #f3e8ff;
+    --grad: linear-gradient(135deg, #f472b6, #a855f7);
+    --text: #3b0764;
+    --sub: #6b21a8;
+    --white: #ffffff;
+    --shadow: 0 4px 24px rgba(168,85,247,0.13);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    background: linear-gradient(160deg, #fdf2f8 0%, #f5f3ff 100%);
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  /* ヘッダー */
+  .hero {
+    background: var(--grad);
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 140px; height: 140px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .hero-label {
+    display: inline-block;
+    background: rgba(255,255,255,0.22);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    color: #fff;
+    font-size: clamp(20px, 5vw, 28px);
+    font-weight: 900;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero p {
+    color: rgba(255,255,255,0.88);
+    font-size: 13px;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-hearts {
+    font-size: 22px;
+    margin-bottom: 12px;
+    letter-spacing: 6px;
+  }
+
+  /* 前提メッセージ */
+  .premise {
+    max-width: 480px;
+    margin: 28px auto 0;
+    padding: 0 16px;
+  }
+  .premise-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px 22px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--pink);
+  }
+  .premise-box h2 {
+    font-size: 14px;
+    color: var(--pink);
+    font-weight: 800;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .premise-box p {
+    font-size: 13px;
+    line-height: 1.85;
+    color: #555;
+  }
+  .premise-box p strong {
+    color: var(--purple);
+  }
+  .start-btn {
+    display: block;
+    width: 100%;
+    margin-top: 22px;
+    padding: 16px;
+    background: var(--grad);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(244,114,182,0.35);
+    letter-spacing: 0.05em;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(244,114,182,0.45); }
+
+  /* 進捗 */
+  .quiz-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+    display: none;
+  }
+  .progress-wrap {
+    margin-bottom: 20px;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--sub);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: var(--pink-mid);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--grad);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+
+  /* 質問カード */
+  .q-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 26px 22px 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .q-num {
+    font-size: 11px;
+    color: var(--pink);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .q-text {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--pink-light);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s;
+    line-height: 1.5;
+  }
+  .opt-btn:hover {
+    border-color: var(--pink);
+    background: var(--pink-mid);
+    transform: translateX(4px);
+  }
+  .opt-btn.selected {
+    border-color: var(--purple);
+    background: var(--purple-light);
+    color: var(--sub);
+  }
+  .opt-label {
+    display: inline-block;
+    background: var(--grad);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    border-radius: 6px;
+    padding: 1px 7px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* 次へボタン */
+  .next-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: var(--grad);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(244,114,182,0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.15s;
+    margin-top: 4px;
+  }
+  .next-btn.visible { opacity: 1; pointer-events: all; }
+  .next-btn:hover { transform: translateY(-2px); }
+
+  /* 結果 */
+  .result-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+    display: none;
+  }
+  .result-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .result-header p {
+    font-size: 13px;
+    color: var(--sub);
+    margin-bottom: 6px;
+  }
+  .result-type {
+    font-size: clamp(22px, 6vw, 30px);
+    font-weight: 900;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .result-emoji { font-size: 48px; display: block; margin: 12px 0; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+  }
+  .result-card h3 {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--pink);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .result-card p {
+    font-size: 14px;
+    line-height: 1.85;
+    color: #555;
+  }
+  .result-card p strong { color: var(--purple); }
+
+  /* メッセージカード */
+  .msg-card {
+    background: var(--grad);
+    border-radius: 20px;
+    padding: 26px 22px;
+    margin-bottom: 14px;
+    color: #fff;
+  }
+  .msg-card h3 {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+  .msg-card p {
+    font-size: 14px;
+    line-height: 1.85;
+    opacity: 0.95;
+  }
+
+  /* 共通メッセージ */
+  .common-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 26px 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    border-top: 4px solid var(--pink);
+    text-align: center;
+  }
+  .common-card h3 {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .common-card p {
+    font-size: 14px;
+    line-height: 1.9;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  .common-card .big-msg {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--purple);
+    margin: 14px 0;
+    line-height: 1.6;
+  }
+
+  /* noteリンク */
+  .note-card {
+    background: linear-gradient(135deg, #f5f3ff, #fce7f3);
+    border-radius: 20px;
+    padding: 24px 22px;
+    margin-bottom: 14px;
+    border: 2px solid var(--pink-mid);
+    text-align: center;
+  }
+  .note-card h3 {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--sub);
+    margin-bottom: 10px;
+  }
+  .note-card p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+  .note-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: var(--grad);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    box-shadow: 0 4px 16px rgba(244,114,182,0.3);
+    transition: transform 0.15s;
+  }
+  .note-btn:hover { transform: translateY(-2px); }
+
+  /* リトライ */
+  .retry-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--sub);
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid var(--pink-mid);
+    border-radius: 50px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 6px;
+    transition: all 0.15s;
+  }
+  .retry-btn:hover { background: var(--pink-light); }
+
+  /* フッター */
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+    color: #aaa;
+  }
+
+  /* アニメ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.4s ease both; }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="hero">
+  <div class="hero-label">💕 恋愛心理診断</div>
+  <div class="hero-hearts">💗 💜 💗</div>
+  <h1>彼があなたを<br>手放せない理由診断</h1>
+  <p>男性心理の視点から<br>彼の本当の気持ちを分析します</p>
+</div>
+
+<!-- 前提メッセージ＋スタート -->
+<div class="premise" id="premise-section">
+  <div class="premise-box">
+    <h2>📌 診断を始める前に</h2>
+    <p>
+      男性はあなたが思っている以上に、<strong>あなたのことを大切に思っています。</strong><br><br>
+      「本当に私のこと好きなの？」と不安になることもあるかもしれない。<br><br>
+      でも、男性の愛情表現は女性とは全く違います。<br><br>
+      この診断では、<strong>「彼がどんな理由であなたを手放せないのか」</strong>を男性心理の観点から分析します。<br><br>
+      あなたが思っている以上に、彼はあなたを大切にしています。<br>
+      それを知るための診断です💕
+    </p>
+    <button class="start-btn" onclick="startQuiz()">診断スタート ✨</button>
+  </div>
+</div>
+
+<!-- クイズ -->
+<div class="quiz-wrap" id="quiz-section">
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="q-counter">Q1 / 10</span>
+      <span id="q-percent">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="q-card fade-up" id="q-card">
+    <div class="q-num" id="q-num">QUESTION 01</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+  </div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の質問へ →</button>
+</div>
+
+<!-- 結果 -->
+<div class="result-wrap" id="result-section">
+  <div class="result-header fade-up">
+    <p>あなたの診断結果</p>
+    <span class="result-emoji" id="r-emoji"></span>
+    <div class="result-type" id="r-type"></div>
+  </div>
+
+  <div class="result-card fade-up" id="r-reason-card">
+    <h3>💝 彼が手放せない理由</h3>
+    <p id="r-reason"></p>
+  </div>
+
+  <div class="result-card fade-up" id="r-style-card">
+    <h3>💌 彼の愛し方</h3>
+    <p id="r-style"></p>
+  </div>
+
+  <div class="result-card fade-up" id="r-pos-card">
+    <h3>👑 彼にとってのあなた</h3>
+    <p id="r-pos"></p>
+  </div>
+
+  <div class="msg-card fade-up">
+    <h3>🫶 あこからあなたへ</h3>
+    <p id="r-msg"></p>
+  </div>
+
+  <!-- 共通メッセージ -->
+  <div class="common-card fade-up">
+    <h3>💗 どのタイプでも、<br>伝えたいことは一つです</h3>
+    <p>あなたは、自分が思っているより、<br><strong>ずっと彼にとって大切な存在です。</strong></p>
+    <p class="big-msg">「男性の愛情表現は<br>女性と全然違う」<br>だから見えにくいだけ。<br>でも、ちゃんとそこにあります。</p>
+    <p>もっと自信を持っていいんですよ💕</p>
+  </div>
+
+  <!-- noteへの導線 -->
+  <div class="note-card fade-up">
+    <h3>📝 もっと彼の心理を知りたい方へ</h3>
+    <p>
+      男性のタイプ別に<br>
+      「ずっと愛される方法」を<br>
+      完全解説したnoteがあります。<br><br>
+      今どんな関係でも、<br>本命として大切にされる方法をお伝えしています。
+    </p>
+    <a class="note-btn" href="https://note.com/goodhappy_future" target="_blank">
+      noteで詳しく読む 💕
+    </a>
+  </div>
+
+  <button class="retry-btn" onclick="retry()">🔄 もう一度診断する</button>
+</div>
+
+<footer>© あこ | 男が沼る恋愛心理学スキル</footer>
+
+<script>
+const questions = [
+  {
+    text: "彼はどんな状況でも連絡してくれる？",
+    opts: [
+      "何かある時は必ず連絡してくれる",
+      "気まぐれだけど、たまに連絡してくれる",
+      "私からが多いけど、返信はくれる",
+      "既読スルーもある"
+    ]
+  },
+  {
+    text: "あなたと話している時の彼は？",
+    opts: [
+      "私の話を真剣に聞いてくれる",
+      "基本聞いてくれる、たまにスマホを見る",
+      "うん、うん、って感じ",
+      "自分の話が多い"
+    ]
+  },
+  {
+    text: "彼は会う約束を守ってくれる？",
+    opts: [
+      "必ず守ってくれる",
+      "基本守るけど、たまにキャンセルある",
+      "急なキャンセルが多め",
+      "約束自体があまりない"
+    ]
+  },
+  {
+    text: "あなたが落ち込んでいる時、彼は？",
+    opts: [
+      "気づいて自分から声をかけてくれる",
+      "言えば話を聞いてくれる",
+      "あまり気づかないけど、優しくはある",
+      "あまり関心を示さない"
+    ]
+  },
+  {
+    text: "彼はあなたの記念日（誕生日など）を？",
+    opts: [
+      "サプライズで何かしてくれる",
+      "ちゃんと覚えてお祝いしてくれる",
+      "言えばお祝いしてくれる",
+      "忘れることがある"
+    ]
+  },
+  {
+    text: "あなたの友達や家族について彼は？",
+    opts: [
+      "興味を持って聞いてくれる",
+      "話せば聞いてくれる",
+      "あまり聞いてこない",
+      "話題に出したことがない"
+    ]
+  },
+  {
+    text: "二人きりの時の彼は？",
+    opts: [
+      "積極的にスキンシップしてくれる",
+      "穏やかで一緒にいると安心する",
+      "話すけど、なんとなく距離がある",
+      "スマホを見ていることが多い"
+    ]
+  },
+  {
+    text: "彼はあなたの意見や気持ちを？",
+    opts: [
+      "いつも大切にしてくれる",
+      "聞こうとしてくれる",
+      "まあまあ聞いてくれる",
+      "自分の意見が強い"
+    ]
+  },
+  {
+    text: "将来の話になると彼は？",
+    opts: [
+      "積極的に話してくれる",
+      "聞けば話してくれる",
+      "あまり乗り気じゃない",
+      "話題をそらすことが多い"
+    ]
+  },
+  {
+    text: "全体的に彼との関係は？",
+    opts: [
+      "一緒にいてとても安心する",
+      "楽しいけど不安になることもある",
+      "好きだけど手応えがない",
+      "振り回されてる感じがある"
+    ]
+  }
+];
+
+const results = [
+  {
+    type: "溺愛確定タイプ",
+    emoji: "🔥",
+    reason: "「この人じゃないとダメだ」という確信があります。彼はあなたとの時間を何よりも大切にしていて、あなたがいる未来を自然と描いています。",
+    style: "行動でちゃんと示してくれるタイプ。あなたの話を聞いて、記念日を覚えて、大切にしてくれることが行動に出ています。言葉より先に行動が出るのが彼の愛し方です。",
+    pos: "すでに「かけがえのない存在」です。彼の中で、あなたはもう特別な場所を占めています。",
+    msg: "彼はすでにあなたに夢中です。あなたが思っている以上に、あなたを失うことを恐れています。もっと自信を持っていいんですよ💕"
+  },
+  {
+    type: "着実に本命化タイプ",
+    emoji: "💛",
+    reason: "「一緒にいると落ち着く」という感覚があります。日常の中でじわじわとあなたへの気持ちが育っていて、気づいたら手放せなくなっているタイプです。",
+    style: "派手な愛情表現はしないけど、あなたといる時間をとても大切にしています。言葉より行動で示す、誠実なタイプ。",
+    pos: "「この人となら長くいられる」と感じ始めている特別な存在。彼の中で、あなたへの気持ちはゆっくりと、でも確実に深まっています。",
+    msg: "不安になることもあるかもしれないけど、彼はちゃんとあなたを見ています。焦らなくていいんです。彼のペースで、確実にあなたへの気持ちが育っていますよ💕"
+  },
+  {
+    type: "ツンデレ本命タイプ",
+    emoji: "💙",
+    reason: "「この人のことが気になって仕方ない」という状態です。素直に表現できないだけで、心の中ではあなたのことをたくさん考えています。",
+    style: "感情を表に出すのが苦手なだけで、あなたのことはちゃんと考えています。回避型の傾向があるかもしれないけど、それはあなたが特別だから。",
+    pos: "「特別に思っているからこそ、うまく接することができない」という、もどかしい存在。彼にとってあなたは、だからこそ大切な人です。",
+    msg: "手応えがないと感じているかもしれないけど、それは彼が不器用なだけです。あなたは思っている以上に彼にとって大切な人ですよ。自信を持って💕"
+  },
+  {
+    type: "追いかけてくるタイプ",
+    emoji: "💜",
+    reason: "今は自分のことで精一杯かもしれないけど、「失いたくない」という気持ちは確かにあります。あなたがいなくなった時に初めて気づくタイプ。",
+    style: "今は甘えてしまっているかもしれないけど、それはあなたのそばにいることが「当たり前に安心できる」と思っているから。あなたの存在が彼の安定になっています。",
+    pos: "「いて当たり前」に思ってしまうくらい、あなたは彼の生活に溶け込んだ存在。それは、それだけ深く関係が築かれているということです。",
+    msg: "振り回されてる、と感じているかもしれないけど、あなたにはそれだけの魅力があります。むしろ、今のあなたには「追われる側になる力」が十分にあります💕"
+  }
+];
+
+let scores = [0, 0, 0, 0];
+let current = 0;
+let selected = null;
+
+function startQuiz() {
+  document.getElementById('premise-section').style.display = 'none';
+  document.getElementById('quiz-section').style.display = 'block';
+  showQuestion();
+}
+
+function showQuestion() {
+  selected = null;
+  const q = questions[current];
+  document.getElementById('q-counter').textContent = `Q${current + 1} / ${questions.length}`;
+  const pct = Math.round((current / questions.length) * 100);
+  document.getElementById('q-percent').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-num').textContent = `QUESTION ${String(current + 1).padStart(2, '0')}`;
+  document.getElementById('q-text').textContent = q.text;
+
+  const labels = ['A', 'B', 'C', 'D'];
+  const container = document.getElementById('options');
+  container.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-label">${labels[i]}</span>${opt}`;
+    btn.onclick = () => selectOpt(i, btn);
+    container.appendChild(btn);
+  });
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.classList.remove('visible');
+  nextBtn.textContent = current === questions.length - 1 ? '結果を見る 💕' : '次の質問へ →';
+
+  // fade
+  const card = document.getElementById('q-card');
+  card.classList.remove('fade-up');
+  void card.offsetWidth;
+  card.classList.add('fade-up');
+}
+
+function selectOpt(idx, btn) {
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selected = idx;
+  document.getElementById('next-btn').classList.add('visible');
+}
+
+function nextQuestion() {
+  if (selected === null) return;
+  scores[selected]++;
+  current++;
+  if (current >= questions.length) {
+    showResult();
+  } else {
+    showQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-section').style.display = 'none';
+  document.getElementById('result-section').style.display = 'block';
+
+  // 最高スコアのインデックス
+  let maxIdx = 0;
+  scores.forEach((s, i) => { if (s > scores[maxIdx]) maxIdx = i; });
+
+  const r = results[maxIdx];
+  document.getElementById('r-emoji').textContent = r.emoji;
+  document.getElementById('r-type').textContent = r.type;
+  document.getElementById('r-reason').textContent = r.reason;
+  document.getElementById('r-style').textContent = r.style;
+  document.getElementById('r-pos').textContent = r.pos;
+  document.getElementById('r-msg').textContent = r.msg;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function retry() {
+  scores = [0, 0, 0, 0];
+  current = 0;
+  selected = null;
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('quiz-section').style.display = 'block';
+  showQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
